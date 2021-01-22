@@ -54,8 +54,8 @@ class Cell:
 
 
 class Grid:
-    # 5x5 grid
-    size = 20
+    # 30x30 grid
+    size = 30
 
     def __init__(self: object) -> object:
         # Init NxN grid with all cells as closed (value='*')
