@@ -1,23 +1,34 @@
-from random import randint
-from timing import run_sorting_algorithm
-
-ARRAY_LENGTH = 1000
+# from ..run_parallel_algos import swap, compare
+compares = swaps = 0
 
 
-def selection_sort(arr):
-    for i in range(len(arr)-1):
-        min = i
-        for j in range(i+1, len(arr)):
-            if arr[j] < arr[min]:
-                min = j
+def compare(i, j):
+    global compares
+    compares += 1
+    return i > j
 
-        arr[min], arr[i] = arr[i], arr[min]
 
+def swap(arr, i, j):
+    global swaps
+    arr[i], arr[j] = arr[j], arr[i]
+    swaps += 1
     return arr
 
 
-if __name__ == '__main__':
-    # Generate Array of random integers
-    array = [randint(0, 1000) for i in range(ARRAY_LENGTH)]
+def selection_sort(arr):
+    """
+    Select minimum from the list and place to leftmost.
+    Repeat the process for remaining sub list
+    """
+    global compares, swaps
+    for i in range(len(arr)-1):
+        min = i
+        for j in range(i+1, len(arr)):
+            if compare(arr[min], arr[j]):
+                min = j
 
-    run_sorting_algorithm(algorithm="selection_sort", array=array)
+        arr = swap(arr, i, min)
+
+    print(f"{compares=}")
+    print(f"{swaps=}")
+    return arr

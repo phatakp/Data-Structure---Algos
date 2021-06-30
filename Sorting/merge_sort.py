@@ -1,53 +1,56 @@
-'''
-nums = [23, 29, 1, 11, 89, 56, 4]
-[23, 29, 1]             [11, 89, 56, 4]
-[23]  [29, 1]           [11, 89]    [56, 4]
-[23] [29] [1]           [11] [89]   [56] [4] 
-[23] [1, 29]            [11, 89]    [4, 56]
-[1, 23, 29]             [4, 11, 56, 89]
-[1, 4, 11, 23, 29, 56, 89]
-'''
-from random import randint
-from timing import run_sorting_algorithm
+compares = swaps = 0
 
-ARRAY_LENGTH = 1000
+
+def compare(i, j):
+    global compares
+    compares += 1
+    return i > j
+
+
+def swap(arr, i, j):
+    global swaps
+    arr[i], arr[j] = arr[j], arr[i]
+    swaps += 1
+    return arr
 
 
 def merge(left, right):
+    global compares, swaps
     result = []
-    l = r = 0
-
+    l_id = r_id = 0
     while len(result) < len(left) + len(right):
-        if l < len(left) and r < len(right):
-            if left[l] < right[r]:
-                result.append(left[l])
-                l += 1
+        if l_id < len(left) and r_id < len(right):
+            if compare(left[l_id], right[r_id]):
+                result.append(right[r_id])
+                r_id += 1
             else:
-                result.append(right[r])
-                r += 1
-        elif l >= len(left):
-            result.append(right[r])
-            r += 1
-        else:
-            result.append(left[l])
-            l += 1
-
+                result.append(left[l_id])
+                l_id += 1
+        elif l_id < len(left):
+            result.append(left[l_id])
+            l_id += 1
+        elif r_id < len(right):
+            result.append(right[r_id])
+            r_id += 1
     return result
 
 
-def merge_sort(arr):
-
+def split_array(arr):
     if len(arr) < 2:
         return arr
 
     mid = len(arr) // 2
+    return merge(left=split_array(arr[:mid]),
+                 right=split_array(arr[mid:]))
 
-    return merge(left=merge_sort(arr[:mid]),
-                 right=merge_sort(arr[mid:]))
 
-
-if __name__ == '__main__':
-    # Generate Array of random integers
-    array = [randint(0, 1000) for i in range(ARRAY_LENGTH)]
-
-    run_sorting_algorithm(algorithm="merge_sort", array=array)
+def merge_sort(arr):
+    """
+    Recursively split arrays until no further possible.
+    Merge splits in sorted order until all merged
+    """
+    global compares, swaps
+    arr = split_array(arr)
+    print(f"{compares=}")
+    print(f"{swaps=}")
+    return arr

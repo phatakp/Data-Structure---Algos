@@ -1,29 +1,39 @@
-from random import randint
-from .timing import run_sorting_algorithm
+# from ..run_parallel_algos import swap, compare
 
-ARRAY_LENGTH = 1000
+compares = swaps = 0
+
+
+def compare(i, j):
+    global compares
+    compares += 1
+    return i > j
+
+
+def swap(arr, i, j):
+    global swaps
+    arr[i], arr[j] = arr[j], arr[i]
+    swaps += 1
+    return arr
 
 
 def bubble_sort(arr):
-
-    def swap(i, j):
-        arr[i], arr[j] = arr[j], arr[i]
-
+    """
+    Swap two adjacent numbers if left > right.
+    Each pass will result in largest number in the end.
+    Repeat until no swaps are required
+    """
+    global compares, swaps
     end = len(arr)
     swapped = True
     while swapped:
         swapped = False
         end -= 1
         for i in range(end):
-            if arr[i] > arr[i+1]:
-                swap(i, i+1)
+            j = i + 1
+            if compare(arr[i], arr[j]):
+                arr = swap(arr, i, j)
                 swapped = True
 
+    print(f"{compares=}")
+    print(f"{swaps=}")
     return arr
-
-
-if __name__ == '__main__':
-    # Generate Array of random integers
-    array = [randint(0, 1000) for i in range(ARRAY_LENGTH)]
-
-    run_sorting_algorithm(algorithm="bubble_sort", array=array)

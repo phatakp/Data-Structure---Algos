@@ -1,39 +1,47 @@
-'''
-nums = [23, 29, 1, 11, 89, 56, 4]
-       [1, 4] [11] [23, 29, 89, 56]
-       [1] [4] [11] [23, 29, 56] [89]
-       [1] [4] [11] [23] [29] [56] [89]
-       [1,4] [11] [23,29,56] [89]
-       [1,4,11] [23,29,56,89]
-       [1,4,11,23,29,56,89]
-'''
-from random import randint
-from timing import run_sorting_algorithm
-
-ARRAY_LENGTH = 1000
+from random import randrange
+compares = swaps = 0
 
 
-def quick_sort(arr):
+def compare(i, j):
+    global compares
+    compares += 1
+    return i > j
 
+
+def swap(arr, i, j):
+    global swaps
+    arr[i], arr[j] = arr[j], arr[i]
+    swaps += 1
+    return arr
+
+
+def pivot_and_repeat(arr):
     if len(arr) < 2:
         return arr
 
     left, mid, right = [], [], []
-    pivot = arr[len(arr) // 2]
+    pivot = arr[randrange(len(arr))]
 
     for num in arr:
-        if num < pivot:
+        if compare(pivot, num):
             left.append(num)
         elif num == pivot:
             mid.append(num)
         else:
             right.append(num)
 
-    return quick_sort(left) + mid + quick_sort(right)
+    return pivot_and_repeat(left) + mid + pivot_and_repeat(right)
 
 
-if __name__ == '__main__':
-    # Generate Array of random integers
-    array = [randint(0, 1000) for i in range(ARRAY_LENGTH)]
+def quick_sort(arr):
+    """ 
+    Select a random number from array as pivot.
+    Move all numbers smaller to pivot on the left side and larger than pivot on right side.
+    Repeat the process by then recursively selecting pivot from left and right sides.
+    """
+    global comp, swaps
 
-    run_sorting_algorithm(algorithm="quick_sort", array=array)
+    arr = pivot_and_repeat(arr)
+    print(f"{compares=}")
+    print(f"{swaps=}")
+    return arr
